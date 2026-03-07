@@ -1,0 +1,14 @@
+---
+description: After finishing file updates, commit and push when git is configured
+alwaysApply: true
+---
+
+# Git commit and push after updates
+
+When you finish updating files in this project:
+
+1. **Check for git**: If the workspace has a git repository (`.git` exists and `git status` works), proceed.
+2. **Commit**: Stage all changes and commit with a **clear, relevant message** that describes what was done (e.g. "Add OTA HTML page", "Fix WiFi reconnect logic", "Update .gitignore for Arduino build").
+3. **Push**: Run `git push` to update the remote.
+
+Only do this after **you** have made the edits. Use present tense or imperative in the message (e.g. "Add feature X", "Fix bug in Y"). Skip if there are no changes or if the user has not asked for updates.
