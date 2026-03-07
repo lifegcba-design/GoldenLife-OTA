@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Golden</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* לא לשנות - הגדרת גופן */
+        background-color: #f8fbfd; /* שנה כאן - צבע הרקע של כל הדף (כרגע בהיר עם גוון כחול) */
+        color: #333; /* לא לשנות - צבע טקסט ראשי */
+        margin: 0; /* לא לשנות - מרווח חיצוני */
+        padding: 0; /* לא לשנות - רווח פנימי */
+        display: flex; /* לא לשנות - תצוגה גמישה */
+        justify-content: center; /* לא לשנות - מרכוז אופקי */
+        align-items: center; /* לא לשנות - מרכוז אנכי */
+        height: 100vh; /* לא לשנות - גובה מלא של המסך */
+    }
+
+    #container {
+        background-color: #ffffff; /* לא לשנות - רקע של הקופסה הראשית (ניתן לשנות אם רוצים) */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* לא לשנות - צל לקופסה */
+        border-radius: 16px; /* לא לשנות - עיגול פינות */
+        padding: 30px; /* לא לשנות - רווח פנימי */
+        width: fit-content; /* לא לשנות - רוחב אוטומטי */
+        max-width: 450px; /* לא לשנות - רוחב מקסימלי */
+        text-align: center; /* לא לשנות - מרכוז טקסט */
+    }
+
+    h1 {
+        font-size: 26px; /* לא לשנות - גודל כותרת ראשית */
+        color: #007bff; /* לא לשנות - צבע כותרת */
+        margin-bottom: 25px; /* לא לשנות - מרווח תחתון */
+    }
+
+    label {
+        font-weight: 600; /* לא לשנות - משקל גופן */
+        margin-top: 4px; /* צמצום נוסף מ-8px ל-4px - מרווח עליון */
+        display: block; /* לא לשנות - תצוגה כבלוק */
+        color: #555; /* לא לשנות - צבע טקסט */
+    }
+
+    input[type="number"] {
+        width: 100%; /* לא לשנות - רוחב מלא */
+        padding: 10px; /* לא לשנות - רווח פנימי */
+        margin-top: 8px; /* לא לשנות - מרווח עליון */
+        margin-bottom: 5px; /* צמצום נוסף מ-10px ל-5px - מרווח תחתון */
+        border: 1px solid #ccc; /* לא לשנות - גבול */
+        border-radius: 8px; /* לא לשנות - עיגול פינות */
+        font-size: 15px; /* לא לשנות - גודל גופן */
+        text-align: center; /* לא לשנות - מרכוז טקסט */
+    }
+
+    button {
+        width: 100%; /* לא לשנות - רוחב מלא */
+        padding: 12px; /* לא לשנות - רווח פנימי */
+        font-size: 16px; /* לא לשנות - גודל גופן */
+        color: #fff; /* לא לשנות - צבע טקסט */
+        background-color: #007bff; /* לא לשנות - צבע רקע (ניתן לשנות אם רוצים) */
+        border: none; /* לא לשנות - ללא גבול */
+        border-radius: 10px; /* לא לשנות - עיגול פינות */
+        cursor: pointer; /* לא לשנות - סמן יד */
+        margin-top: 4px; /* צמצום נוסף מ-8px ל-4px - מרווח עליון */
+        display: flex; /* לא לשנות - תצוגה גמישה */
+        justify-content: center; /* לא לשנות - מרכוז אופקי */
+        align-items: center; /* לא לשנות - מרכוז אנכי */
+        gap: 8px; /* לא לשנות - רווח בין אייקונים לטקסט */
+        text-align: center; /* לא לשנות - מרכוז טקסט */
+    }
+
+    button:hover {
+        background-color: #0056b3; /* לא לשנות - צבע רקע בה Hover (ניתן לשנות אם רוצים) */
+    }
+
+    #disconnectButton {
+        background-color: #dc3545; /* לא לשנות - צבע רקע כפתור ניתוק (ניתן לשנות אם רוצים) */
+    }
+
+    #disconnectButton:hover {
+        background-color: #c82333; /* לא לשנות - צבע רקע בה Hover של ניתוק (ניתן לשנות אם רוצים) */
+    }
+
+    #errorMessage {
+        color: #dc3545; /* לא לשנות - צבע הודעת שגיאה (ניתן לשנות אם רוצים) */
+        margin-top: 20px; /* לא לשנות - מרווח עליון */
+        font-size: 14px; /* לא לשנות - גודל גופן */
+        display: none; /* לא לשנות - הסתרה כברירת מחדל */
+    }
+
+    #controlPanel {
+        display: none; /* לא לשנות - הסתרה כברירת מחדל */
+    }
+
+    #totalVibrations {
+        font-size: 18px; /* תקטן מ-24px ל-18px - גודל גופן של רטטים שנותרו */
+        color: #007bff; /* לא לשנות - צבע טקסט */
+        font-weight: bold; /* לא לשנות - משקל גופן */
+        margin-top: 10px; /* לא לשנות - מרווח עליון */
+    }
+
+    .status-container {
+        margin-top: 30px;
+        background-color: #f0f4f8; /* שינוי לרקע מקצועי יותר */
+        padding: 5px; /* צמצום נוסף מ-10px ל-5px - רווח פנימי */
+        border: 1px solid #e0e6ed; /* הוספת גבול עדין */
+        border-radius: 15px; /* נשאר כפי שהוא */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* הוספת צל קל */
+    }
+
+    .status-container h3 {
+        margin-bottom: 0;
+        font-size: 18px;
+        color: #2c3e50; /* שינוי לצבע כחול כהה מקצועי */
+    }
+
+    .status-container span {
+        font-size: 20px; /* תקטן מ-30px ל-20px - גודל גופן של תרחישים שנותרו ומצב סוללה */
+    }
+
+    .status-container span.low-battery {
+        color: #dc3545; /* צבע אדום כאשר הסוללה ≤ 40% */
+    }
+
+    /* סגנון ספציפי להודעת "לחץ התחל מחדש" */
+    .status-container span.restart-message {
+        font-size: 14px; /* תקטן מ-18px ל-14px - גודל גופן של ההודעה "הסתיים (לחץ התחל מחדש)" */
+        color: #dc3545; /* לא לשנות - צבע טקסט (ניתן לשנות אם רוצים) */
+    }
+
+    @media (max-width: 600px) {
+        #container {
+            padding: 20px; /* לא לשנות - רווח פנימי */
+            width: 90%; /* לא לשנות - רוחב */
+        }
+
+        h1 {
+            font-size: 22px; /* לא לשנות - גודל כותרת */
+        }
+
+        input[type="number"], button {
+            width: 100%; /* לא לשנות - רוחב */
+            font-size: 14px; /* לא לשנות - גודל גופן */
+        }
+
+        .status-container {
+            padding: 4px; /* צמצום נוסף מ-8px ל-4px - רווח פנימי במסכים קטנים */
+            border: 1px solid #e0e6ed; /* גבול גם במסכים קטנים */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* צל גם במסכים קטנים */
+        }
+
+        .status-container h3 {
+            font-size: 12px;
+            color: #2c3e50; /* שמירה על צבע מקצועי */
+        }
+
+        .status-container span {
+            font-size: 16px; /* תקטן מ-20px ל-16px - גודל גופן של תרחישים שנותרו ומצב סוללה במסכים קטנים */
+        }
+
+        .status-container span.low-battery {
+            color: #dc3545; /* צבע אדום גם במסכים קטנים */
+        }
+
+        .status-container span.restart-message {
+            font-size: 12px; /* תקטן מ-14px ל-12px - גודל גופן של ההודעה במסכים קטנים */
+        }
+
+        #totalVibrations {
+            font-size: 16px; /* תקטן מ-22px ל-16px - גודל גופן של רטטים שנותרו במסכים קטנים */
+        }
+    }
+
+    #advancedOptions label {
+        margin-top: 4px; /* צמצום נוסף מ-8px ל-4px - מרווח עליון */
+        font-weight: 600; /* לא לשנות - משקל גופן */
+        display: block; /* לא לשנות - תצוגה כבלוק */
+        color: #444; /* לא לשנות - צבע טקסט */
+    }
+
+    #advancedOptions input {
+        width: 100%; /* לא לשנות - רוחב */
+        padding: 10px; /* לא לשנות - רווח פנימי */
+        margin-top: 6px; /* לא לשנות - מרווח עליון */
+        margin-bottom: 5px; /* צמצום נוסף מ-10px ל-5px - מרווח תחתון */
+        border: 1px solid #ccc; /* לא לשנות - גבול */
+        border-radius: 8px; /* לא לשנות - עיגול פינות */
+        font-size: 14px; /* לא לשנות - גודל גופן */
+        text-align: center; /* לא לשנות - מרכוז טקסט */
+    }
+
+    #advancedOptions h3 {
+        font-size: 18px; /* לא לשנות - גודל גופן */
+        color: #007bff; /* לא לשנות - צבע טקסט */
+        margin-top: 10px; /* לא לשנות - מרווח עליון */
+        margin-bottom: 10px; /* לא לשנות - מרווח תחתון */
+    }
+
+    #advancedOptions h3 span {
+        font-size: 20px; /* לא לשנות - גודל גופן */
+        font-weight: bold; /* לא לשנות - משקל גופן */
+        color: #333; /* לא לשנות - צבע טקסט */
+    }
+</style>
+</head>
+<body>
+    <div id="container">
+        <h1>BLE Control Panel</h1>
+
+        <div id="errorMessage">Failed to connect to BLE device. Please try again.</div>
+
+        <button id="connectButton" onclick="connectBLE()">
+            <i class="fas fa-plug"></i> Connect to ESP32 BLE
+        </button>
+        <button id="disconnectButton" onclick="disconnectBLE()" style="display: none;">
+            <i class="fas fa-times-circle"></i> Disconnect BLE
+        </button>
+        <div id="statusMessage" style="color: green; margin-top: 10px;"></div>
+
+        <div id="controlPanel">
+            <div class="status-container">
+                <h3>
+                    <i id="batteryIcon" class="fas fa-battery-empty" style="color: #666; font-size: 1.2em; margin-right: 8px;"></i>
+                    מצב סוללה: <span id="batteryPercentageDisplay">--</span>%
+                </h3>
+                <h3>תרחישים שנותרו: <span id="remainingScenariosDisplay">--</span></h3>
+                <h3>רטטים שנותרו: <span id="totalVibrations">--</span></h3>
+            </div>
+
+            <label for="vibratePower">Vibrate Power:</label>
+            <input type="number" id="vibratePower" min="160" max="255" placeholder="Enter Vibrate Power" onchange="debounceUpdateBLEValue('vibratePower')">
+
+            <label for="pulseInterval">Pulse Interval (ms):</label>
+            <input type="number" id="pulseInterval" min="100" max="5000" placeholder="Enter Pulse Interval" onchange="debounceUpdateBLEValue('pulseInterval')">
+
+            <label for="pulseNumber">Pulse Number:</label>
+            <input type="number" id="pulseNumber" min="1" max="2000" placeholder="Enter Pulse Number" onchange="debounceUpdateBLEValue('pulseNumber')">
+
+            <label for="vibrationDuration">Vibration Duration (ms):</label>
+            <input type="number" id="vibrationDuration" min="100" max="2000" placeholder="Enter Vibration Duration" onchange="debounceUpdateBLEValue('vibrationDuration')">
+
+            <button id="startButton" onclick="startScenario()">
+                <i class="fas fa-play-circle"></i> Start Scenario
+            </button>
+
+            <button id="advancedOptionsButton" onclick="toggleAdvancedOptions()">
+                <i class="fas fa-cogs"></i> אפשרויות מתקדמות
+            </button>
+
+            <div id="advancedOptions" style="display: none;">
+                <h3>הגדרות מתקדמות</h3>
+                <div class="form-group">
+                    <label for="postDelay">השהיה בין תרחישים (דקות):</label>
+                    <input type="number" id="postDelay" min="4" max="255" value="35" onchange="debounceUpdateBLEValue('postDelay')">
+                </div>
+                <div class="form-group">
+                    <label for="repeatCount">חזרה על תרחיש:</label>
+                    <input type="number" id="repeatCount" min="1" max="255" value="1" onchange="debounceUpdateBLEValue('repeatCount')">
+                </div>
+				
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let device, server, service, charStart, charStop, charVibratePower, charPulseInterval, charPulseNumber, charVibrationDuration, charVibrationStatus;
+    let connectionInterval, batteryVoltageInterval;
+    let lastKnownVoltage = 0.0;
+
+    const BATTERY_MIN_VOLTAGE = 3.0;
+    const BATTERY_MAX_VOLTAGE = 4.2;
+
+    // טעינת ערכים מ-localStorage
+    window.onload = function() {
+        document.getElementById('vibratePower').value = localStorage.getItem('vibratePower') || '';
+        document.getElementById('pulseInterval').value = localStorage.getItem('pulseInterval') || '';
+        document.getElementById('pulseNumber').value = localStorage.getItem('pulseNumber') || '';
+        document.getElementById('vibrationDuration').value = localStorage.getItem('vibrationDuration') || '';
+        document.getElementById('postDelay').value = localStorage.getItem('postDelay') || '4';
+        document.getElementById('repeatCount').value = localStorage.getItem('repeatCount') || '1';
+    };
+
+    function convertVoltageToPercentage(voltage) {
+        if (voltage <= BATTERY_MIN_VOLTAGE) return 0;
+        if (voltage >= BATTERY_MAX_VOLTAGE) return 100;
+        const range = BATTERY_MAX_VOLTAGE - BATTERY_MIN_VOLTAGE;
+        const percentage = Math.max(0, Math.min(100, ((voltage - BATTERY_MIN_VOLTAGE) / range) * 100));
+        return Math.round(percentage);
+    }
+
+    function updateBatteryIcon(percentage) {
+        const batteryIcon = document.getElementById('batteryIcon');
+        if (!batteryIcon) return;
+
+        let iconClass = percentage <= 10 ? 'fa-battery-empty' :
+                        percentage <= 30 ? 'fa-battery-quarter' :
+                        percentage <= 60 ? 'fa-battery-half' :
+                        percentage <= 90 ? 'fa-battery-three-quarters' : 'fa-battery-full';
+        let iconColor = percentage <= 10 ? '#dc3545' :
+                        percentage <= 30 ? '#ffc107' :
+                        percentage <= 60 ? '#007bff' : '#28a745';
+
+        batteryIcon.classList.remove('fa-battery-empty', 'fa-battery-quarter', 'fa-battery-half', 'fa-battery-three-quarters', 'fa-battery-full');
+        batteryIcon.classList.add(iconClass);
+        batteryIcon.style.color = iconColor;
+    }
+     
+    function updateBatteryColor() {
+        const batteryDisplay = document.getElementById('batteryPercentageDisplay');
+        if (batteryDisplay) {
+            const batteryValue = parseInt(batteryDisplay.textContent, 10); // המרת הטקסט למספר
+            if (batteryValue <= 40) {
+                batteryDisplay.classList.add('low-battery');
+            } else {
+                batteryDisplay.classList.remove('low-battery');
+            }
+        }
+    }
+
+    // בדיקה ראשונית בעת טעינת הדף
+    window.addEventListener('load', updateBatteryColor);
+
+    // עדכון בזמן אמת (אם הערך משתנה דינמית)
+    setInterval(updateBatteryColor, 1000); // בדיקה כל שנייה
+	
+    function checkBLEConnection() {
+        if (!device || !device.gatt.connected) {
+            console.log("BLE disconnected, trying to reconnect...");
+            handleBleDisconnected();
+        }
+    }
+
+    function handleBleDisconnected(event) {
+        console.log('BLE device disconnected!', event ? event.target.name : '');
+        document.getElementById('statusMessage').textContent = "Connection Lost. Please reconnect.";
+        document.getElementById('errorMessage').textContent = "חיבור נותק. אנא לחץ על 'התחבר ל-ESP32 BLE' כדי לבחור ולהתחבר מחדש.";
+        document.getElementById('errorMessage').style.display = 'block';
+
+        document.getElementById('controlPanel').style.display = 'none';
+        document.getElementById('connectButton').style.display = 'block';
+        document.getElementById('disconnectButton').style.display = 'none';
+
+        clearInterval(connectionInterval);
+        clearInterval(batteryVoltageInterval);
+        connectionInterval = null;
+        batteryVoltageInterval = null;
+
+        device = null;
+        server = null;
+        service = null;
+        charStart = null;
+        charStop = null;
+        charVibratePower = null;
+        charPulseInterval = null;
+        charPulseNumber = null;
+        charVibrationDuration = null;
+        charVibrationStatus = null;
+
+        document.getElementById('batteryPercentageDisplay').textContent = '--';
+        const batteryIcon = document.getElementById('batteryIcon');
+        if (batteryIcon) {
+            batteryIcon.classList.remove('fa-battery-quarter', 'fa-battery-half', 'fa-battery-three-quarters', 'fa-battery-full');
+            batteryIcon.classList.add('fa-battery-empty');
+            batteryIcon.style.color = '#666';
+        }
+        document.getElementById('remainingScenariosDisplay').textContent = '--';
+        document.getElementById('totalVibrations').textContent = '--';
+        lastKnownVoltage = 0.0;
+    }
+
+    async function connectBLE() {
+	     if (device && device.gatt.connected) {
+			document.getElementById('statusMessage').textContent = "כבר מחובר למכשיר.";
+			return;
+		}
+        try {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('statusMessage').textContent = "מתחבר...";
+
+            device = await navigator.bluetooth.requestDevice({
+                acceptAllDevices: true,
+                optionalServices: ['069f372b-274b-4198-a099-74f2791734a5']
+            });
+
+            device.addEventListener('gattserverdisconnected', handleBleDisconnected);
+
+            server = await device.gatt.connect();
+            service = await server.getPrimaryService('069f372b-274b-4198-a099-74f2791734a5');
+
+            await getCharacteristic(service, '84a054be-6a59-402c-9f49-cf3a5a0c230b', 'Vibrate Power', (c) => charVibratePower = c);
+            await getCharacteristic(service, '53843d2f-2a09-4614-8776-fc8a68fee4b9', 'Pulse Interval', (c) => charPulseInterval = c);
+            await getCharacteristic(service, '8c29fc39-27ae-4e90-a7de-eb3eb4f820bf', 'Pulse Number', (c) => charPulseNumber = c);
+            await getCharacteristic(service, '7737e412-351e-4245-9e79-b2a5673a5abf', 'Vibration Duration', (c) => charVibrationDuration = c);
+            await getCharacteristic(service, '66ccf7cf-6a9e-4eda-b868-515dd5b9eb8b', 'Start/Stop', (c) => { charStart = c; charStop = c });
+            await getCharacteristic(service, '12cfcb54-2b8a-4da4-a737-f040b6f79fc7', 'Vibration Status', (c) => charVibrationStatus = c);
+
+            await loadScenarioParams();
+            await loadSettingsFromBLE();
+            await startNotifications();
+
+            document.getElementById('controlPanel').style.display = 'block';
+            document.getElementById('connectButton').style.display = 'none';
+            document.getElementById('disconnectButton').style.display = 'block';
+            document.getElementById('statusMessage').textContent = "מחובר למכשיר: " + (device.name || 'Unknown Device');
+            document.getElementById('errorMessage').style.display = 'none';
+
+            if (batteryVoltageInterval) clearInterval(batteryVoltageInterval);
+            batteryVoltageInterval = setInterval(async () => {
+                console.log("Attempting to read battery voltage every 30 seconds...");
+                if (device && device.gatt.connected && charStart) {
+                    await loadScenarioParams();
+                } else {
+                    console.warn("Device not connected, stopping battery voltage read interval.");
+                    clearInterval(batteryVoltageInterval);
+                    batteryVoltageInterval = null;
+                }
+            }, 30000);
+
+            if (!connectionInterval) {
+                connectionInterval = setInterval(checkBLEConnection, 30000);
+            }
+        } catch (error) {
+            console.error('BLE connection failed:', error);
+            document.getElementById('errorMessage').textContent = error.name === 'NotFoundError' ? "בחירת המכשיר בוטלה. אנא נסה שוב." : `חיבור BLE נכשל: ${error.message}`;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('statusMessage').textContent = "התחברות נכשלה.";
+            document.getElementById('controlPanel').style.display = 'none';
+            document.getElementById('connectButton').style.display = 'block';
+            document.getElementById('disconnectButton').style.display = 'none';
+            clearInterval(connectionInterval);
+            clearInterval(batteryVoltageInterval);
+            connectionInterval = null;
+            batteryVoltageInterval = null;
+            lastKnownVoltage = 0.0;
+        }
+    }
+
+    function updateVibrationStatus(remainingVibrations) {
+        const totalVibrations = document.getElementById('totalVibrations');
+        if (totalVibrations) totalVibrations.textContent = remainingVibrations;
+    }
+
+    let debounceTimeout;
+    function debounceUpdateBLEValue(field) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => updateBLEValue(field), 500);
+    }
+
+    async function updateBLEValue(field) {
+        try {
+            if (!device || !device.gatt.connected) {
+                console.warn('Cannot update BLE value: Device not connected.');
+                handleBleDisconnected();
+                return;
+            }
+
+            const vibratePower = parseInt(document.getElementById('vibratePower').value, 10) || 160;
+            const pulseInterval = parseInt(document.getElementById('pulseInterval').value, 10) || 100;
+            const pulseNumber = parseInt(document.getElementById('pulseNumber').value, 10) || 1;
+            const vibrationDuration = parseInt(document.getElementById('vibrationDuration').value, 10) || 100;
+            const postDelay = parseInt(document.getElementById('postDelay').value, 10) || 4;
+            const repeatCount = parseInt(document.getElementById('repeatCount').value, 10) || 1;
+
+            localStorage.setItem('vibratePower', vibratePower);
+            localStorage.setItem('pulseInterval', pulseInterval);
+            localStorage.setItem('pulseNumber', pulseNumber);
+            localStorage.setItem('vibrationDuration', vibrationDuration);
+            localStorage.setItem('postDelay', postDelay);
+            localStorage.setItem('repeatCount', repeatCount);
+
+            if (charVibratePower) {
+                const buffer = new ArrayBuffer(1);
+                new DataView(buffer).setUint8(0, vibratePower);
+                await charVibratePower.writeValue(buffer);
+            }
+
+            if (charPulseInterval) {
+                const buffer = new ArrayBuffer(2);
+                new DataView(buffer).setUint16(0, pulseInterval, true);
+                await charPulseInterval.writeValue(buffer);
+            }
+
+            if (charPulseNumber) {
+                const buffer = new ArrayBuffer(2);
+                new DataView(buffer).setUint16(0, pulseNumber, true);
+                await charPulseNumber.writeValue(buffer);
+            }
+
+            if (charVibrationDuration) {
+                const buffer = new ArrayBuffer(2);
+                new DataView(buffer).setUint16(0, vibrationDuration, true);
+                await charVibrationDuration.writeValue(buffer);
+            }
+
+            if (charStart) {
+                const voltageRaw = Math.round(lastKnownVoltage * 100);
+                const buffer = new ArrayBuffer(7);
+                const view = new DataView(buffer);
+                view.setUint8(0, 1);
+                view.setUint16(1, postDelay, true);
+                view.setUint8(3, repeatCount);
+                view.setUint16(4, voltageRaw, true);
+                view.setUint8(6, repeatCount);
+                await charStart.writeValue(buffer);
+            }
+
+            console.log(`✅ Updated BLE with: vibratePower=${vibratePower}, pulseInterval=${pulseInterval}, pulseNumber=${pulseNumber}, vibrationDuration=${vibrationDuration}, postDelay=${postDelay}, repeatCount=${repeatCount}`);
+            document.getElementById('statusMessage').textContent = "הפרמטרים נשמרו בהצלחה!";
+            setTimeout(() => {
+                document.getElementById('statusMessage').textContent = device && device.gatt.connected ? "מחובר למכשיר: " + (device.name || 'Unknown Device') : '';
+            }, 2000);
+        } catch (error) {
+            console.error(`Failed to update ${field} on BLE:`, error);
+            document.getElementById('errorMessage').textContent = `שגיאה בשמירת הפרמטרים: ${error.message}`;
+            document.getElementById('errorMessage').style.display = 'block';
+            handleBleDisconnected();
+        }
+    }
+
+    async function loadSettingsFromBLE() {
+        try {
+            if (!device || !device.gatt.connected) {
+                console.warn('Cannot load settings: Device not connected.');
+                return;
+            }
+
+            const vibratePowerValue = await charVibratePower.readValue();
+            document.getElementById('vibratePower').value = new DataView(vibratePowerValue.buffer).getUint8(0);
+
+            const pulseIntervalValue = await charPulseInterval.readValue();
+            document.getElementById('pulseInterval').value = new DataView(pulseIntervalValue.buffer).getUint16(0, true);
+
+            const pulseNumberValue = await charPulseNumber.readValue();
+            document.getElementById('pulseNumber').value = new DataView(pulseNumberValue.buffer).getUint16(0, true);
+
+            const vibrationDurationValue = await charVibrationDuration.readValue();
+            document.getElementById('vibrationDuration').value = new DataView(vibrationDurationValue.buffer).getUint16(0, true);
+        } catch (error) {
+            console.error("Failed to load settings from BLE: ", error);
+            handleBleDisconnected();
+        }
+    }
+
+    function parseStartStopData(dataView) {
+        const command = dataView.getUint8(0);
+        const delay = dataView.getUint16(1, true);
+        const repeat = dataView.getUint8(3);
+        const voltageRaw = dataView.getUint16(4, true);
+        const remainingScenarios = dataView.getUint8(6);
+        const voltageV = voltageRaw / 100;
+        return { command, delay, repeat, voltageV, remainingScenarios };
+    }
+
+    async function loadScenarioParams() {
+		try {
+			if (!device || !device.gatt.connected) {
+				console.warn('Cannot load scenario params: Device not connected.');
+				return;
+			}
+
+			const value = await charStart.readValue();
+			const view = new DataView(value.buffer);
+			const len = view.byteLength;
+
+			if (len < 7) {
+				console.warn('Received data length less than expected (7 bytes) for Start/Stop characteristic.');
+				document.getElementById('errorMessage').textContent = 'נתונים חלקיים מהמכשיר. אנא נסה להתחבר מחדש.';
+				document.getElementById('errorMessage').style.display = 'block';
+				return;
+			}
+
+			const { command, delay, repeat, voltageV, remainingScenarios } = parseStartStopData(view);
+
+			if (voltageV < 0 || voltageV > 4.2) {
+				console.warn('Invalid voltage value:', voltageV);
+				return;
+			}
+
+			lastKnownVoltage = voltageV;
+
+			const postDelayElem = document.getElementById('postDelay');
+			if (postDelayElem) postDelayElem.value = delay >= 4 ? delay : 4;
+
+			const repeatCountElem = document.getElementById('repeatCount');
+			if (repeatCountElem) repeatCountElem.value = repeat > 0 ? repeat : 1;
+
+			const batteryPercentageDisplayElem = document.getElementById('batteryPercentageDisplay');
+			const percentage = convertVoltageToPercentage(voltageV);
+			if (batteryPercentageDisplayElem) batteryPercentageDisplayElem.textContent = percentage;
+			updateBatteryIcon(percentage);
+
+			const remainingScenariosDisplay = document.getElementById('remainingScenariosDisplay');
+			if (remainingScenariosDisplay) {
+				if (remainingScenarios === 0 && (command === 0 || command === 1)) {
+					remainingScenariosDisplay.textContent = "הסתיים (לחץ התחל מחדש)";
+					remainingScenariosDisplay.classList.add('restart-message');
+				} else {
+					remainingScenariosDisplay.textContent = remainingScenarios;
+					remainingScenariosDisplay.classList.remove('restart-message');
+				}
+			}
+
+			console.log("✅ Loaded scenario parameters:", { command, delay, repeat, voltageV, remainingScenarios });
+		} catch (error) {
+			console.error("❌ Failed to load scenario parameters:", error);
+			handleBleDisconnected();
+		}
+	}
+    async function getCharacteristic(service, uuid, name, callback) {
+        try {
+            const characteristic = await service.getCharacteristic(uuid);
+            console.log(`${name} characteristic retrieved.`);
+            callback(characteristic);
+        } catch (error) {
+            console.warn(`${name} characteristic not found:`, error);
+            throw error;
+        }
+    }
+
+    async function startScenario() {
+        try {
+            if (!device || !device.gatt.connected) {
+                console.warn('Cannot start scenario: Device not connected.');
+                handleBleDisconnected();
+                return;
+            }
+
+            await updateBLEValue('vibratePower');
+            await updateBLEValue('pulseInterval');
+            await updateBLEValue('pulseNumber');
+            await updateBLEValue('vibrationDuration');
+
+            let postDelayMinutes = parseInt(document.getElementById('postDelay').value, 10);
+            if (isNaN(postDelayMinutes) || postDelayMinutes < 4) {
+                console.warn('⛔ Post delay invalid, using minimum 4.');
+                postDelayMinutes = 4;
+            }
+
+            let repeatCountValue = parseInt(document.getElementById('repeatCount').value, 10);
+            if (isNaN(repeatCountValue) || repeatCountValue < 1) {
+                console.warn('⛔ Repeat count invalid, using minimum 1.');
+                repeatCountValue = 1;
+            }
+
+            const voltageRaw = Math.round(lastKnownVoltage * 100);
+
+            if (charStart) {
+                const buffer = new ArrayBuffer(7);
+                const view = new DataView(buffer);
+                view.setUint8(0, 1);
+                view.setUint16(1, postDelayMinutes, true);
+                view.setUint8(3, repeatCountValue);
+                view.setUint16(4, voltageRaw, true);
+                view.setUint8(6, repeatCountValue);
+
+                console.log(`📤 Sending Start: delay=${postDelayMinutes}, repeat=${repeatCountValue}, voltage=${voltageRaw}, initial_remaining=${repeatCountValue}`);
+                await charStart.writeValue(buffer);
+                await new Promise(resolve => setTimeout(resolve, 100));
+                await loadScenarioParams();
+            }
+        } catch (error) {
+            console.error("❌ Failed to send start scenario command:", error);
+            handleBleDisconnected();
+        }
+    }
+
+    async function stopScenario() {
+        try {
+            if (!device || !device.gatt.connected) {
+                console.warn('Cannot stop scenario: Device not connected.');
+                handleBleDisconnected();
+                return;
+            }
+            if (charStop) {
+                const buffer = new ArrayBuffer(1);
+                new DataView(buffer).setUint8(0, 0);
+                await charStop.writeValue(buffer);
+                console.log("Stop scenario command sent.");
+            }
+        } catch (error) {
+            console.error("Failed to stop scenario:", error);
+            handleBleDisconnected();
+        }
+    }
+
+    async function startNotifications() {
+        if (charVibrationStatus) {
+            charVibrationStatus.addEventListener('characteristicvaluechanged', handleVibrationUpdate);
+            await charVibrationStatus.startNotifications();
+            console.log('Started vibration notifications (for internal scenario progress, if used).');
+        }
+
+        if (charStart) {
+            charStart.addEventListener('characteristicvaluechanged', handleStartStopUpdate);
+            await charStart.startNotifications();
+            console.log('Started Start/Stop characteristic notifications.');
+        }
+    }
+
+    function handleStartStopUpdate(event) {
+        const value = event.target.value;
+        const { command, delay, repeat, voltageV, remainingScenarios } = parseStartStopData(value);
+
+        lastKnownVoltage = voltageV;
+
+        const batteryPercentageDisplayElem = document.getElementById('batteryPercentageDisplay');
+        const percentage = convertVoltageToPercentage(voltageV);
+        if (batteryPercentageDisplayElem) batteryPercentageDisplayElem.textContent = percentage;
+        updateBatteryIcon(percentage);
+
+        const remainingScenariosDisplay = document.getElementById('remainingScenariosDisplay');
+        if (remainingScenariosDisplay) {
+            if (remainingScenarios === 0 && (command === 0 || command === 1)) {
+                remainingScenariosDisplay.textContent = "הסתיים (לחץ התחל מחדש)";
+                remainingScenariosDisplay.classList.add('restart-message');
+            } else {
+                remainingScenariosDisplay.textContent = remainingScenarios;
+                remainingScenariosDisplay.classList.remove('restart-message');
+            }
+        }
+
+        console.log("BLE Start/Stop Notification:", { command, delay, repeat, voltageV, remainingScenarios });
+    }
+
+    function handleVibrationUpdate(event) {
+        const value = event.target.value.getUint16(0, true);
+        document.getElementById('totalVibrations').textContent = value;
+    }
+
+    async function disconnectBLE() {
+        if (device && device.gatt.connected) {
+            device.gatt.disconnect();
+            console.log('BLE disconnected');
+            handleBleDisconnected();
+        } else {
+            handleBleDisconnected();
+        }
+    }
+
+    function toggleAdvancedOptions() {
+		const section = document.getElementById('advancedOptions');
+		if (!section) {
+			console.error('Error: Element with id="advancedOptions" not found.');
+			document.getElementById('errorMessage').textContent = 'שגיאה: לא נמצא אלמנט אפשרויות מתקדמות.';
+			document.getElementById('errorMessage').style.display = 'block';
+			return;
+		}
+		const isHidden = section.style.display === 'none';
+		section.style.display = isHidden ? 'block' : 'none';
+		document.getElementById('advancedOptionsButton').textContent = isHidden ? 'סגור אפשרויות מתקדמות' : 'אפשרויות מתקדמות';
+		console.log(`Advanced options toggled: ${isHidden ? 'shown' : 'hidden'}`);
+	}
+	window.onbeforeunload = function() {
+		clearInterval(connectionInterval);
+		clearInterval(batteryVoltageInterval);
+	};
+	
+</script>
+</html>

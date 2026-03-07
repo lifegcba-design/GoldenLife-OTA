@@ -1,0 +1,23 @@
+# Arduino / build
+*.elf
+*.bin
+build/
+*.hex
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets / env
+*.env
+secrets.h
+credentials.h
+
+# Logs
+*.log
