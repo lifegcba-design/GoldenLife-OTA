@@ -229,6 +229,39 @@
             text-align: center;
             min-height: 20px; /* To prevent layout shift */
         }
+
+        /* Styles previously applied via inline attributes */
+        #disconnectButton {
+            display: none;
+        }
+
+        #statusMessage {
+            color: green;
+            margin-top: 10px;
+        }
+
+        #batteryIcon {
+            color: #666;
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        #advancedOptions {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .advanced-note {
+            display: block;
+            margin-bottom: 10px;
+            color: gray;
+        }
+
+        .advanced-divider {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -240,13 +273,13 @@
         <button id="connectButton" onclick="connectBLE()">
             <i class="fas fa-plug"></i> Connect to ESP32 BLE
         </button>
-        <button id="disconnectButton" onclick="disconnectBLE()" style="display:none;">
+        <button id="disconnectButton" onclick="disconnectBLE()">
             <i class="fas fa-times-circle"></i> Disconnect BLE
         </button>
-        <div id="statusMessage" style="color: green; margin-top: 10px;"></div>
+        <div id="statusMessage"></div>
         <div id="controlPanel">
             <h3>
-               <i id="batteryIcon" class="fas fa-battery-empty" style="color: #666; font-size: 1.2em; margin-right: 8px;"></i>
+               <i id="batteryIcon" class="fas fa-battery-empty"></i>
                 מצב סוללה: <span id="batteryPercentageDisplay">--</span>%
             </h3>
             <h3>תרחישים שנותרו: <span id="remainingScenariosDisplay">--</span></h3>
@@ -271,15 +304,15 @@
             </button>
             <button onclick="toggleAdvancedOptions()"><i class="fas fa-cogs"></i> אפשרויות מתקדמות</button>
             
-            <div id="advancedOptions" style="display: none; margin-top: 20px;">
+            <div id="advancedOptions">
                 <label for="postDelay">זמן השהייה בין תרחישים (בדקות)</label>
                 <input id="postDelay" type="number" min="0" max="65535" value="35" onchange="updateBLEValue('postDelay')" />
                 
-                <small style="display:block; margin-bottom: 10px; color: gray;">מינימום 35 דקות</small>
+                <small class="advanced-note">מינימום 35 דקות</small>
                 <label for="repeatCount">מספר חזרות:</label>
                 <input id="repeatCount" type="number" min="1" max="255" value="1" onchange="updateBLEValue('repeatCount')" />
 
-                <hr style="margin-top: 20px; margin-bottom: 20px; border-top: 1px solid #eee;">
+                <hr class="advanced-divider">
                 <div class="ota-section">
                     <h2>עדכון קושחה (OTA)</h2>
                     <input type="file" id="firmwareFile" accept=".bin">
@@ -326,6 +359,81 @@
     const MAX_CHUNK_SIZE = 500; // Max bytes per BLE write operation (adjust based on ESP32 MTU)
 
     let connectionInterval;
+
+    // --- Google Apps Script logging endpoint ---
+    const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyHyrhSfT1GF_0NoIU8qtQj4bMhMhhK2gBnthBcNmeyNMOOwUFR0jWn3gYP_dhIQQU-/exec";
+
+    // --- Last known battery percent (for logging) ---
+    let lastBatteryPercent = null;
+
+    function extractMacFromDeviceName(name) {
+        // Device name is "Golden life - <MAC>"
+        const prefix = "Golden life - ";
+        if (typeof name !== "string") return "";
+        const idx = name.indexOf(prefix);
+        if (idx === -1) return "";
+        return name.substring(idx + prefix.length).trim();
+    }
+
+    function buildSessionEndEvent(stopReason) {
+        const timestamp = new Date().toISOString();
+        const sessionId = Date.now().toString();
+
+        const vibratePowerVal = parseInt(document.getElementById("vibratePower").value, 10) || 0;
+        const pulseIntervalVal = parseInt(document.getElementById("pulseInterval").value, 10) || 0;
+        const pulseNumberVal = parseInt(document.getElementById("pulseNumber").value, 10) || 0;
+        const vibrationDurationVal = parseInt(document.getElementById("vibrationDuration").value, 10) || 0;
+        const pauseMinutesVal = parseInt(document.getElementById("postDelay").value, 10) || 0;
+        const repeatsVal = parseInt(document.getElementById("repeatCount").value, 10) || 0;
+
+        const batteryPercentVal = lastBatteryPercent != null
+            ? lastBatteryPercent
+            : parseInt(document.getElementById("batteryPercentageDisplay").textContent, 10) || 0;
+
+        return {
+            timestamp,
+            sessionId,
+            eventType: "SESSION_END",
+            source: "WEB",
+            vibratePower: vibratePowerVal,
+            pulseInterval: pulseIntervalVal,
+            pulseNumber: pulseNumberVal,
+            vibrationDuration: vibrationDurationVal,
+            pauseMinutes: pauseMinutesVal,
+            repeats: repeatsVal,
+            stopReason,
+            batteryPercent: batteryPercentVal,
+            rawData: ""
+        };
+    }
+
+    async function sendSessionLogToServer(stopReason) {
+        try {
+            if (!LOG_WEBAPP_URL) return;
+            if (!device) return;
+
+            const mac = extractMacFromDeviceName(device.name || "");
+            const event = buildSessionEndEvent(stopReason);
+            const payload = {
+                mac,
+                events: [event]
+            };
+
+            // Use no-cors to avoid CORS/preflight issues; we don't need to read the response.
+            await fetch(LOG_WEBAPP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            console.log("Session log sent to server (no-cors). Payload:", payload);
+        } catch (err) {
+            console.error("Failed to send session log to server:", err);
+        }
+    }
 
     // --- Battery Voltage Constants (Adjust these based on your specific battery) ---
     const BATTERY_MAX_VOLTAGE = 4.2; // Full charge voltage for a 3.7V LiPo
@@ -613,6 +721,7 @@
         }
 
         batteryPercentageDisplay.textContent = percentage;
+        lastBatteryPercent = percentage;
 
         // Update battery icon based on percentage
         if (percentage > 90) {
@@ -764,6 +873,9 @@
                 await charStop.writeValue(buffer); // שלח את הפקודה למכשיר
                 console.log("Stop scenario command sent.");
                 await new Promise(resolve => setTimeout(resolve, 100)); // Add a small delay for stability
+
+                // After requesting stop from the bracelet, log this session end to Google Sheets (Apps Script)
+                sendSessionLogToServer("MANUAL_STOP");
             } else {
                 console.warn('charStop characteristic is not available. Cannot stop scenario.');
             }

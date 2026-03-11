@@ -1014,6 +1014,22 @@ void setup() {
   strip.clear();
   strip.show();
 
+  // Basic log entry at boot to verify logging works
+  appendLogEvent(
+      String("BOOT"),        // sessionId
+      "BOOT",                // eventType
+      "SYSTEM",              // source
+      vibratePower,
+      pulseInterval,
+      pulsenumber,
+      vibrationDuration,
+      static_cast<int>(savedDelay),
+      static_cast<int>(savedRepeat),
+      "",
+      0,                     // batteryPercent (unknown at this point)
+      "device_started"       // rawData
+  );
+
   // Check EEPROM initialization
   if (EEPROM.read(EEPROM_MAGIC_ADDRESS) != EEPROM_MAGIC_NUMBER) {
     initializeEEPROMDefaults();
