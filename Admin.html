@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoldenLife Admin – גיבוי לוגים</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        color: #333;
+      }
+
+      header {
+        background: linear-gradient(90deg, #1565c0, #42a5f5);
+        color: #fff;
+        padding: 16px 24px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      header p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 24px auto;
+        padding: 0 16px 24px;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+        background-color: #ffffff;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+        margin-bottom: 18px;
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 160px;
+      }
+
+      label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        color: #555;
+      }
+
+      input[type="date"],
+      input[type="text"] {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #d0d7e2;
+        font-size: 0.85rem;
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        background-color: #f9fbff;
+      }
+
+      input[type="date"]:focus,
+      input[type="text"]:focus {
+        border-color: #1e88e5;
+        box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.16);
+        background-color: #fff;
+      }
+
+      button {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+
+      .btn-primary {
+        background-color: #1e88e5;
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background-color: #1565c0;
+      }
+
+      .btn-secondary {
+        background-color: #e3e7f0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background-color: #cfd5e3;
+      }
+
+      .table-wrapper {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+      }
+
+      .table-header {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        color: #555;
+        border-bottom: 1px solid #e1e6f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9ff;
+      }
+
+      .table-header span {
+        font-size: 0.85rem;
+      }
+
+      .table-scroll {
+        max-height: 420px;
+        overflow: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 960px;
+      }
+
+      th,
+      td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        border-bottom: 1px solid #eef1f7;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        background-color: #f1f4ff;
+        z-index: 1;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fafbff;
+      }
+
+      tbody tr:hover {
+        background-color: #eef5ff;
+      }
+
+      .col-wide {
+        min-width: 180px;
+      }
+
+      .col-medium {
+        min-width: 120px;
+      }
+
+      .col-narrow {
+        min-width: 80px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      .badge-session {
+        background-color: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .badge-source-web {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .badge-source-system {
+        background-color: #fff3e0;
+        color: #ef6c00;
+      }
+
+      .badge-event-start {
+        background-color: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .badge-event-end {
+        background-color: #ffebee;
+        color: #c62828;
+      }
+
+      .footer-note {
+        margin-top: 8px;
+        font-size: 0.78rem;
+        color: #6b7280;
+      }
+
+      @media (max-width: 768px) {
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filter-group {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>אדמין GoldenLife – גיבוי לוגים</h1>
+      <p>צפייה בשינויים לפי תאריך ו־MAC Address, בדיוק כפי שנשמר בגיבוי (Google Sheets).</p>
+    </header>
+
+    <div class="container">
+      <section class="filters">
+        <div class="filter-group">
+          <label for="fromDate">מתאריך</label>
+          <input id="fromDate" type="date" />
+        </div>
+        <div class="filter-group">
+          <label for="toDate">עד תאריך</label>
+          <input id="toDate" type="date" />
+        </div>
+        <div class="filter-group">
+          <label for="macFilter">MAC Address</label>
+          <input
+            id="macFilter"
+            type="text"
+            placeholder="לדוגמה: 001122334455"
+          />
+        </div>
+        <div class="filter-group">
+          <button class="btn-primary" id="searchBtn">חפש</button>
+        </div>
+        <div class="filter-group">
+          <button class="btn-secondary" id="clearBtn">נקה פילטרים</button>
+        </div>
+      </section>
+
+      <section class="table-wrapper">
+        <div class="table-header">
+          <span id="summaryText">מראה דוגמה לגיבוי שנשמר בשיטס.</span>
+          <span id="rowsCount">סה״כ רשומות: 2 (דוגמה)</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-wide">תאריך / שעה</th>
+                <th class="col-medium">MAC</th>
+                <th class="col-medium">מזהה סשן</th>
+                <th class="col-medium">סוג אירוע</th>
+                <th class="col-medium">מקור</th>
+                <th class="col-narrow">עוצמת רטט</th>
+                <th class="col-narrow">מרווח (ms)</th>
+                <th class="col-narrow">מס׳ פולסים</th>
+                <th class="col-narrow">משך רטט (ms)</th>
+                <th class="col-narrow">השהייה (דקות)</th>
+                <th class="col-narrow">חזרות</th>
+                <th class="col-wide">סיבת סיום</th>
+                <th class="col-narrow">% סוללה</th>
+                <th class="col-wide">Raw Data</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody">
+              <!-- דוגמה ראשונית שמראה איך נראה הגיבוי מהשיטס -->
+              <tr>
+                <td>11/03/2026 14:32:10</td>
+                <td>001122334455</td>
+                <td><span class="badge badge-session">SESSION_12345</span></td>
+                <td><span class="badge badge-event-start">SESSION_START</span></td>
+                <td><span class="badge badge-source-web">WEB</span></td>
+                <td>195</td>
+                <td>1000</td>
+                <td>60</td>
+                <td>400</td>
+                <td>35</td>
+                <td>4</td>
+                <td></td>
+                <td>87</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>11/03/2026 15:10:40</td>
+                <td>001122334455</td>
+                <td><span class="badge badge-session">SESSION_12345</span></td>
+                <td><span class="badge badge-event-end">SESSION_END</span></td>
+                <td><span class="badge badge-source-web">WEB</span></td>
+                <td>195</td>
+                <td>1000</td>
+                <td>60</td>
+                <td>400</td>
+                <td>35</td>
+                <td>4</td>
+                <td>MANUAL_STOP</td>
+                <td>83</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        שדות הטבלה תואמים לסדר ששומרים גם מהצמיד (`appendLogEvent` בקושחה) וגם מהדפדפן (ה־LOG ל־Google Sheets).
+        בשלב הבא נחבר כאן קריאה אמיתית ל־Google Sheets ונפילטר לפי התאריך וה־MAC שבחרת.
+      </p>
+    </div>
+
+    <script>
+      // כתובת ה-Web App של Apps Script לקריאת לוגים מהגיבוי
+      const LOG_READ_URL = "https://script.google.com/macros/s/AKfycbxNb2g8d7iaXnp4nyBBr-iYT4_j84_90tWyELSKVN8dkTwZYGU3sM3PhzTiAT2QFqs8/exec";
+
+      const fromDateInput = document.getElementById("fromDate");
+      const toDateInput = document.getElementById("toDate");
+      const macInput = document.getElementById("macFilter");
+      const clearBtn = document.getElementById("clearBtn");
+      const searchBtn = document.getElementById("searchBtn");
+      const resultsBody = document.getElementById("resultsBody");
+      const summaryText = document.getElementById("summaryText");
+      const rowsCount = document.getElementById("rowsCount");
+
+      clearBtn.addEventListener("click", () => {
+        fromDateInput.value = "";
+        toDateInput.value = "";
+        macInput.value = "";
+      });
+
+      searchBtn.addEventListener("click", () => {
+        loadLogs();
+      });
+
+      async function loadLogs() {
+        const mac = macInput.value.trim();
+        const from = fromDateInput.value;
+        const to = toDateInput.value;
+
+        const params = new URLSearchParams();
+        if (mac) params.append("mac", mac);
+        if (from) params.append("from", from);
+        if (to) params.append("to", to);
+
+        summaryText.textContent = "טוען נתונים...";
+        rowsCount.textContent = "";
+        resultsBody.innerHTML = "<tr><td colspan='14' style='text-align:center;'>טוען...</td></tr>";
+
+        try {
+          const url = LOG_READ_URL + (params.toString() ? "?" + params.toString() : "");
+          const res = await fetch(url);
+          const json = await res.json();
+
+          if (!json.success) {
+            summaryText.textContent = "שגיאה: " + (json.error || "לא ידוע");
+            resultsBody.innerHTML = "<tr><td colspan='14' style='text-align:center; color:red;'>שגיאה בטעינה</td></tr>";
+            return;
+          }
+
+          renderTable(json.rows || []);
+        } catch (err) {
+          console.error("Failed to load logs:", err);
+          summaryText.textContent = "שגיאת רשת";
+          resultsBody.innerHTML = "<tr><td colspan='14' style='text-align:center; color:red;'>שגיאת רשת: " + err.message + "</td></tr>";
+        }
+      }
+
+      function renderTable(rows) {
+        if (!rows.length) {
+          summaryText.textContent = "אין תוצאות לפילטרים שנבחרו.";
+          rowsCount.textContent = "סה״כ רשומות: 0";
+          resultsBody.innerHTML = "<tr><td colspan='14' style='text-align:center;'>לא נמצאו רשומות</td></tr>";
+          return;
+        }
+
+        summaryText.textContent = "נתונים מהגיבוי (גיבוי לוגים צמידים G Life)";
+        rowsCount.textContent = "סה״כ רשומות: " + rows.length;
+
+        let html = "";
+        for (const r of rows) {
+          const ts = r.timestamp ? formatTimestamp(r.timestamp) : "";
+          const eventBadge = getEventBadge(r.eventType);
+          const sourceBadge = getSourceBadge(r.source);
+
+          html += `<tr>
+            <td>${ts}</td>
+            <td>${r.mac || ""}</td>
+            <td><span class="badge badge-session">${r.sessionId || ""}</span></td>
+            <td>${eventBadge}</td>
+            <td>${sourceBadge}</td>
+            <td>${r.vibratePower || ""}</td>
+            <td>${r.pulseInterval || ""}</td>
+            <td>${r.pulseNumber || ""}</td>
+            <td>${r.vibrationDuration || ""}</td>
+            <td>${r.pauseMinutes || ""}</td>
+            <td>${r.repeats || ""}</td>
+            <td>${r.stopReason || ""}</td>
+            <td>${r.batteryPercent || ""}</td>
+            <td>${r.rawData || ""}</td>
+          </tr>`;
+        }
+        resultsBody.innerHTML = html;
+      }
+
+      function formatTimestamp(isoStr) {
+        try {
+          const d = new Date(isoStr);
+          const day = String(d.getDate()).padStart(2, "0");
+          const month = String(d.getMonth() + 1).padStart(2, "0");
+          const year = d.getFullYear();
+          const hours = String(d.getHours()).padStart(2, "0");
+          const mins = String(d.getMinutes()).padStart(2, "0");
+          const secs = String(d.getSeconds()).padStart(2, "0");
+          return `${day}/${month}/${year} ${hours}:${mins}:${secs}`;
+        } catch {
+          return isoStr;
+        }
+      }
+
+      function getEventBadge(eventType) {
+        if (!eventType) return "";
+        if (eventType.includes("START")) {
+          return `<span class="badge badge-event-start">${eventType}</span>`;
+        }
+        if (eventType.includes("END")) {
+          return `<span class="badge badge-event-end">${eventType}</span>`;
+        }
+        return `<span class="badge">${eventType}</span>`;
+      }
+
+      function getSourceBadge(source) {
+        if (!source) return "";
+        if (source === "WEB") {
+          return `<span class="badge badge-source-web">WEB</span>`;
+        }
+        if (source === "SYSTEM" || source === "BUTTON") {
+          return `<span class="badge badge-source-system">${source}</span>`;
+        }
+        return `<span class="badge">${source}</span>`;
+      }
+
+      // טען לוגים אוטומטית בעת טעינת הדף (ללא פילטרים)
+      document.addEventListener("DOMContentLoaded", () => {
+        loadLogs();
+      });
+    </script>
+  </body>
+</html>
+
