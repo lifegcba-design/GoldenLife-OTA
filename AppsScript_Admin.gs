@@ -10,6 +10,7 @@
  * 6. העתק את ה-URL החדש ל-Admin.html (משתנה LOG_READ_URL)
  */
 
+const SPREADSHEET_ID = '1PUs7N4w8gTZmDl4Wb86JiJFw1m5Q2CjNiY8P4ypo04c';
 const SHEET_NAME = 'גיבוי לוגים צמידים G Life';
 
 function doGet(e) {
@@ -19,7 +20,7 @@ function doGet(e) {
   const toStr     = e && e.parameter && e.parameter.to   ? String(e.parameter.to).trim()   : '';
 
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME);
     
     if (!sheet) {
